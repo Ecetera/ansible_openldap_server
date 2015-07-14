@@ -27,7 +27,7 @@
   register: hdb_db_deleted
 
 - name: Generate the root password for ldap
-  shell: slappasswd -s {{ openldap_server_rootpw }}
+  shell: "slappasswd -s {{ openldap_server_rootpw }}"
   changed_when: root_password.rc != 0
   register: root_password
 
@@ -49,8 +49,8 @@
 #   notify:
 #    - restart slapd
 
-- name: Copy the ldap.conf configuration file
-  template: src=ldap.conf.j2 dest={{ openldap_server_app_path }}/ldap.conf
+# - name: Copy the ldap.conf configuration file
+#   template: "src=ldap.conf.j2 dest={{ openldap_server_app_path }}/ldap.conf"
 
 - name: Copy the rfc2307bis ldif.
   copy:

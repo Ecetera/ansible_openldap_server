@@ -2,19 +2,22 @@
 dn: cn=config
 changetype: modify
 replace: olcTLSCACertificatePath
-olcTLSCACertificatePath: {{openldap_server_app_path}}/certs/
+olcTLSCACertificatePath: {{openldap_server_app_path}}certs/
 -
 replace: olcTLSCACertificateFile
-olcTLSCACertificateFile: {{openldap_server_app_path}}/certs/cacert.crt
+olcTLSCACertificateFile: {{openldap_server_app_path}}certs/cacert.crt
 -
 replace: olcTLSCertificateFile
-olcTLSCertificateFile: {{openldap_server_app_path}}/certs/ldap.crt
+olcTLSCertificateFile: {{openldap_server_app_path}}certs/ldap.crt
 -
 replace: olcTLSCertificateKeyFile
-olcTLSCertificateKeyFile: {{openldap_server_app_path}}/certs/ldap.key
+olcTLSCertificateKeyFile: {{openldap_server_app_path}}certs/ldap.key
 -
 replace: olcTLSDHParamFile
 olcTLSDHParamFile: /dev/null
+-
+replace: olcTLSCipherSuite
+olcTLSCipherSuite: HIGH:MEDIUM:+TLSv1:!SSLv2:+SSLv3
 -
 replace: olcPasswordHash
 olcPasswordHash: {CRYPT}

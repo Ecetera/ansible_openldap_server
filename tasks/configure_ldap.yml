@@ -1,10 +1,10 @@
 ---
 
 - name: Create the directory for ldap database
-  file: path=/var/lib/ldap/{{ openldap_server_domain_name }}/ state=directory owner={{ openldap_server_user }} group={{ openldap_server_user }}
+  file: "path=/var/lib/ldap/{{ openldap_server_domain_name }}/ state=directory owner={{ openldap_server_user }} group={{ openldap_server_user }}"
 
 - name: Create the directory for ldap certificates
-  file: path={{ openldap_server_app_path }}/certs/ state=directory owner={{ openldap_server_user }} group={{ openldap_server_user }}
+  file: "path={{ openldap_server_app_path }}/certs/ state=directory owner={{ openldap_server_user }} group={{ openldap_server_user }}"
 
 - name: Generate the DHE parameter
   command: openssl dhparam 2048 -out dh2048.pem
@@ -96,6 +96,7 @@
 - name: gather list of schemas
   command: "ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=schema,cn=config cn"
   changed_when: openldap_schemas.rc != 0
+  ignore_errors: yes
   register: openldap_schemas
 
 - name: add additional schemas
@@ -104,6 +105,8 @@
     chdir: "{{ openldap_server_app_path }}/schema/"
   when: "'{{item}}' not in openldap_schemas.stdout"
   with_items:
+    - "core"
+    - "collective"
     - "corba"
     - "cosine"
     - "duaconf"
@@ -111,19 +114,18 @@
     - "inetorgperson"
     - "java"
     - "misc"
-    - "rfc2307bis"
     - "openldap"
     - "ppolicy"
-    - "collective"
+    - "rfc2307bis"
   notify:
     - restart slapd
 
 - name: Copy the template for creating base dn
-  template: src={{ item }} dest=/tmp
+  template: "src={{ item }} dest=/tmp"
   register: output
   with_items:
-    - modules.ldif
     - mdb.ldif
+    - modules.ldif
     - "{{ openldap_server_ldif }}"
     - info.ldif
     - memberof.ldif
@@ -136,8 +138,8 @@
   # when: hdb_db_deleted.changed
   with_items:
     - "{{output.results}}"
-  # when: item.changed
-  changed_when:
+  ignore_errors: true
+  when: item.changed
   register: rootdn_created
 
 
